@@ -11,40 +11,43 @@ const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
 
 // Prompt System untuk Ekstraksi Progres IT
 const SYSTEM_PROMPT = `
-Anda adalah AI Agent IT Support yang bertugas mengekstrak laporan progres harian pembukaan toko baru menjadi data JSON terstruktur.
+Anda adalah AI Agent IT Support yang bertugas mengekstrak laporan harian pembukaan toko baru menjadi data jumlah unit riil.
 
 Tugas Anda:
-1. Identifikasi nama/kode toko (store_id).
-2. Perkirakan atau ekstrak nilai persentase (0-100) untuk subunit berikut:
-   - cctv_kabel, cctv_fisik, cctv_online
-   - net_kabel, net_rack_switch, net_testing
-   - admin_kabel, admin_pc_setup, admin_software
-   - kasir_kabel, kasir_pc_setup, kasir_software, kasir_testing
-3. Hitung total_progress (rata-rata dari seluruh subunit).
-4. Buat ringkasan singkat (ai_summary) dan catat kendala jika ada (blockers_issues).
+1. Identifikasi store_id.
+2. Ekstrak data unit berikut (format angka integer):
+   - cctv_target, cctv_kabel_done, cctv_fisik_done, cctv_online_done
+   - net_target_titik, net_kabel_done, net_rack_done, net_test_done
+   - admin_target, admin_kabel_done, admin_pc_done, admin_sw_done
+   - kasir_target, kasir_kabel_done, kasir_pc_done, kasir_sw_done, kasir_test_done
+3. Hitung total_progress_percent (otomatis dari total fisik terpasang dibanding target).
+4. Ringkas ai_summary dan catat blockers_issues jika ada.
 
-Kembalikan HANYA format JSON murni tanpa markdown formatting:
+Kembalikan HANYA JSON murni:
 {
   "store_id": "STRING",
-  "cctv_kabel": NUMBER,
-  "cctv_fisik": NUMBER,
-  "cctv_online": NUMBER,
-  "net_kabel": NUMBER,
-  "net_rack_switch": NUMBER,
-  "net_testing": NUMBER,
-  "admin_kabel": NUMBER,
-  "admin_pc_setup": NUMBER,
-  "admin_software": NUMBER,
-  "kasir_kabel": NUMBER,
-  "kasir_pc_setup": NUMBER,
-  "kasir_software": NUMBER,
-  "kasir_testing": NUMBER,
-  "total_progress": NUMBER,
+  "cctv_target": NUMBER,
+  "cctv_kabel_done": NUMBER,
+  "cctv_fisik_done": NUMBER,
+  "cctv_online_done": NUMBER,
+  "net_target_titik": NUMBER,
+  "net_kabel_done": NUMBER,
+  "net_rack_done": NUMBER,
+  "net_test_done": NUMBER,
+  "admin_target": NUMBER,
+  "admin_kabel_done": NUMBER,
+  "admin_pc_done": NUMBER,
+  "admin_sw_done": NUMBER,
+  "kasir_target": NUMBER,
+  "kasir_kabel_done": NUMBER,
+  "kasir_pc_done": NUMBER,
+  "kasir_sw_done": NUMBER,
+  "kasir_test_done": NUMBER,
+  "total_progress_percent": NUMBER,
   "ai_summary": "STRING",
   "blockers_issues": "STRING"
 }
 `;
-
 // Event Listener Telegram Pesan Teks
 bot.on('text', async (ctx) => {
   const userMessage = ctx.message.text;
