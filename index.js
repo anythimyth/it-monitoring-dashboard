@@ -4,33 +4,32 @@ import axios from 'axios';
 import http from 'http';
 import 'dotenv/config';
 
-// 1. Inisialisasi Bot Telegram & Gemini API
 const botToken = process.env.TELEGRAM_BOT_TOKEN;
 const geminiApiKey = process.env.GEMINI_API_KEY;
 const appScriptUrl = process.env.APPS_SCRIPT_URL;
 
 if (!botToken || !geminiApiKey || !appScriptUrl) {
-  console.error('❌ ERROR: Salah satu Environment Variable (TELEGRAM_BOT_TOKEN, GEMINI_API_KEY, APPS_SCRIPT_URL) belum diisi!');
+  console.error('❌ ERROR: Salah satu Environment Variable belum diisi!');
 }
 
 const bot = new Telegraf(botToken);
 const ai = new GoogleGenAI({ apiKey: geminiApiKey });
 
-// 2. System Prompt untuk Gemini AI (Pengolahan Unit Riil)
+// System Prompt yang sudah diperbaiki sintaks-nya
 const SYSTEM_PROMPT = `
 Anda adalah AI Agent IT Support yang bertugas mengekstrak laporan progres harian pembukaan toko baru menjadi data unit riil.
 
 Ekstrak atau perkirakan angka integer unit berikut berdasarkan pesan yang diberikan:
-- store_id: Nama/Kode toko (contoh: "Prama Cibogo", "Narma Harvest").
+- store_id: Nama/Kode toko.
 - cctv_target, cctv_kabel_done, cctv_fisik_done, cctv_online_done
 - net_target_titik, net_kabel_done, net_rack_done, net_test_done
 - admin_target, admin_kabel_done, admin_pc_done, admin_sw_done
 - kasir_target, kasir_kabel_done, kasir_pc_done, kasir_sw_done, kasir_test_done
 - total_progress_percent: Persentase rata-rata total fisik selesai dibanding target (0-100).
 - ai_summary: Ringkasan singkat progres pengerjaan hari ini.
-- blockers_issues: Catatan kendala, barang kurang, atau kendala lapangan jika ada (isi string kosong jika tidak ada).
+- blockers_issues: Catatan kendala, barang kurang, atau kendala lapangan jika ada.
 
-Kembalikan HANYA JSON murni tanpa markdown formatting (tanpa ```json ... ```):
+Kembalikan HANYA JSON murni tanpa markdown codeblock:
 {
   "store_id": "STRING",
   "cctv_target": NUMBER,
@@ -56,23 +55,18 @@ Kembalikan HANYA JSON murni tanpa markdown formatting (tanpa ```json ... ```):
 }
 `;
 
-// 3. Command Handler /start
 bot.start((ctx) => {
-  ctx.reply('👋 Halo! Saya adalah AI Agent IT Support Monitoring Progres Toko Baru.\n\nSilakan kirimkan laporan harian pengerjaan CCTV, Jaringan, PC Admin, dan PC Kasir. Saya akan merekapnya secara otomatis ke Google Sheets dan Web Dashboard.');
+  ctx.reply('👋 Halo! Saya adalah AI Agent IT Support Monitoring Progres Toko Baru.\n\nSilakan kirimkan laporan harian pengerjaan CCTV, Jaringan, PC Admin, dan PC Kasir.');
 });
 
-// 4. Message Handler (Setiap Kali Ada Chat Masuk)
 bot.on('text', async (ctx) => {
   const userMessage = ctx.message.text;
-  
-  // Abaikan perintah /start agar tidak diproses Gemini
   if (userMessage.startsWith('/start')) return;
 
-  console.log(`📩 Pesan masuk dari Telegram: "${userMessage}"`);
+  console.log(`📩 Pesan masuk: "${userMessage}"`);
   await ctx.reply('⏳ AI Agent sedang mengekstrak laporan unit...');
 
   try {
-    // A. Panggil Gemini API
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [
@@ -81,14 +75,9 @@ bot.on('text', async (ctx) => {
       config: { responseMimeType: "application/json" }
     });
 
-    const rawJsonText = response.text;
-    console.log('🤖 Hasil respons dari Gemini API:', rawJsonText);
+    const parsedData = JSON.parse(response.text);
 
-    const parsedData = JSON.parse(rawJsonText);
-
-    // B. Kirim Data Hasil Ekstraksi ke Google Apps Script API
-    console.log('🚀 Mengirim data ke Apps Script API...');
-    const apiResponse = await axios.post(appScriptUrl, {
+    await axios.post(appScriptUrl, {
       type: "UPDATE_STATUS",
       data: {
         ...parsedData,
@@ -96,9 +85,6 @@ bot.on('text', async (ctx) => {
       }
     });
 
-    console.log('✅ Respons dari Google Apps Script:', apiResponse.data);
-
-    // C. Balas Konfirmasi ke Chat Telegram
     const replyMessage = 
       `✅ **Laporan Berhasil Direkap!**\n\n` +
       `🏪 **Toko:** ${parsedData.store_id || 'Toko Unnamed'}\n` +
@@ -113,25 +99,22 @@ bot.on('text', async (ctx) => {
     await ctx.replyWithMarkdown(replyMessage);
 
   } catch (err) {
-    console.error('❌ Error pada proses AI Agent:', err.message || err);
-    await ctx.reply('❌ Gagal memproses laporan. Pastikan pesan berisi informasi nama toko dan detail unit riil (CCTV, PC, Jaringan).');
+    console.error('❌ Error AI Agent:', err.message || err);
+    await ctx.reply('❌ Gagal memproses laporan. Pastikan pesan berisi nama toko dan detail unit.');
   }
 });
 
-// 5. Jalankan Bot Telegram Polling
 bot.launch()
   .then(() => console.log('🤖 IT Agent Telegram Bot is running...'))
-  .catch((err) => console.error('❌ Gagal menjalankan Telegram Bot:', err));
+  .catch((err) => console.error('❌ Gagal menjalankan bot:', err));
 
-// 6. HTTP Server Dummy untuk Port Binding Render (Web Service Mode)
 const PORT = process.env.PORT || 3000;
 http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('IT Support Telegram Bot Engine is Live & Running!\n');
+  res.end('IT Support Telegram Bot Engine Live!\n');
 }).listen(PORT, () => {
-  console.log(`🌐 HTTP Server listening on port ${PORT} for Render health checks.`);
+  console.log(`🌐 Server running on port ${PORT}`);
 });
 
-// 7. Graceful Shutdown Handlers
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
