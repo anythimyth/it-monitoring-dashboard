@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Support - Dashboard Unit</title>
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-  <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+  <!-- Tailwind CSS & Lucide Icons CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased">
+<body class="min-h-screen flex flex-col font-sans antialiased bg-slate-900 text-slate-100">
 
   <!-- HEADER -->
   <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
@@ -22,11 +23,11 @@
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <select id="storeSelect" onchange="fetchDashboardData()" class="bg-slate-800 border border-slate-700 text-sm text-slate-200 rounded-lg px-3 py-2">
+        <select id="storeSelect" onchange="fetchDashboardData()" class="bg-slate-800 border border-slate-700 text-sm text-slate-200 rounded-lg px-3 py-2 outline-none">
           <option value="">-- Pilih Toko --</option>
         </select>
         <button onclick="fetchDashboardData()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700">
-          <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
         </button>
       </div>
     </div>
@@ -41,8 +42,8 @@
         <p class="text-sm text-slate-400">Progres riil pemasangan unit IT di lapangan.</p>
       </div>
       <div class="flex items-center gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 min-w-[220px]">
-        <div class="relative w-16 h-16 flex items-center justify-center">
-          <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+        <div class="relative w-16 h-16 flex items-center justify-center overflow-hidden">
+          <svg class="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
             <path class="text-slate-700" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
             <path id="progressCircle" class="text-blue-500 transition-all duration-1000 stroke-current" stroke-linecap="round" stroke-width="3.5" stroke-dasharray="0, 100" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
@@ -55,7 +56,7 @@
       </div>
     </div>
 
-    <!-- METRICS GRID (5 Pilar IT) -->
+    <!-- METRICS GRID -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- 1. CCTV -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
@@ -116,11 +117,11 @@
   </main>
 
   <script>
-    // BARIS 110: GANTI DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA
-    const API_URL = "[https://script.google.com/macros/s/AKfycbz03Upg25xhHSdy5gm4jKsJK8N4XI4mgq9JnVWoMO2AaG5X15IvSScfAvkFMa1T_Qsx/exec](https://script.google.com/macros/s/AKfycbz03Upg25xhHSdy5gm4jKsJK8N4XI4mgq9JnVWoMO2AaG5X15IvSScfAvkFMa1T_Qsx/exec)";
+    // BARIS 110: PASTIKAN BERISI WEB APP URL GOOGLE APPS SCRIPT ANDA
+    const API_URL = "https://script.google.com/macros/s/AKfycbz03Upg25xhHSdy5gm4jKsJK8N4XI4mgq9JnVWoMO2AaG5X15IvSScfAvkFMa1T_Qsx/exec";
 
     document.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
       fetchDashboardData();
     });
 
