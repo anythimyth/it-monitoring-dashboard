@@ -146,11 +146,19 @@
 
     function updateUI(d) {
       if (!d) return;
-      document.getElementById("storeTitle").textContent = d.store_id;
-      document.getElementById("lastUpdateText").textContent = `Last Update: ${d.last_update}`;
-      document.getElementById("totalProgressPercent").textContent = `${d.total_progress_percent}%`;
-      document.getElementById("progressCircle").setAttribute("stroke-dasharray", `${d.total_progress_percent}, 100`);
 
+      // 1. Format Nama Toko & Timestamp
+      document.getElementById("storeTitle").textContent = d.store_id || "Prama Baleendah";
+      
+      const lastUp = d.last_update ? d.last_update.toString().replace('T', ' ').substring(0, 19) : '-';
+      document.getElementById("lastUpdateText").textContent = `Last Update: ${lastUp}`;
+
+      // 2. Hitung Total Progress Akumulasi
+      const totalPct = d.total_progress_percent || d.total_progress || 0;
+      document.getElementById("totalProgressPercent").textContent = `${totalPct}%`;
+      document.getElementById("progressCircle").setAttribute("stroke-dasharray", `${totalPct}, 100`);
+
+      // 3. Mapping Data Unit Riil ke Baris Dashboard
       setUnit("cctv_kabel", d.cctv_kabel_done, d.cctv_target);
       setUnit("cctv_fisik", d.cctv_fisik_done, d.cctv_target);
       setUnit("cctv_online", d.cctv_online_done, d.cctv_target);
@@ -169,10 +177,17 @@
     }
 
     function setUnit(id, done, target) {
-      const d = done || 0, t = target || 1;
-      const pct = Math.min(Math.round((d / t) * 100), 100);
-      document.getElementById(`${id}_val`).textContent = `${d} / ${t}`;
-      document.getElementById(`${id}_bar`).style.width = `${pct}%`;
+      const d = parseInt(done) || 0;
+      const t = parseInt(target) || 0;
+      
+      // Jika target 0, fallback tampilan agar tidak bagi dengan nol
+      const pct = t > 0 ? Math.min(Math.round((d / t) * 100), 100) : 0;
+      
+      const valEl = document.getElementById(`${id}_val`);
+      const barEl = document.getElementById(`${id}_bar`);
+      
+      if (valEl) valEl.textContent = `${d} / ${t} Unit`;
+      if (barEl) barEl.style.width = `${pct}%`;
     }
 
     function renderLogs(logs) {
