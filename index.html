@@ -147,40 +147,57 @@
     function updateUI(d) {
       if (!d) return;
 
-      // 1. Format Nama Toko & Timestamp
-      document.getElementById("storeTitle").textContent = d.store_id || "Prama Baleendah";
+      // 1. Format Nama Toko & Last Update
+      document.getElementById("storeTitle").textContent = d.store_id || d.Store_Id || "Prama Baleendah";
       
-      const lastUp = d.last_update ? d.last_update.toString().replace('T', ' ').substring(0, 19) : '-';
+      const rawDate = d.last_update || d.Last_Update || "";
+      const lastUp = rawDate ? rawDate.toString().replace('T', ' ').substring(0, 19) : '-';
       document.getElementById("lastUpdateText").textContent = `Last Update: ${lastUp}`;
 
       // 2. Hitung Total Progress Akumulasi
-      const totalPct = d.total_progress_percent || d.total_progress || 0;
+      const totalPct = parseInt(d.total_progress_percent || d.total_progress || d.Total_Progress || 0);
       document.getElementById("totalProgressPercent").textContent = `${totalPct}%`;
       document.getElementById("progressCircle").setAttribute("stroke-dasharray", `${totalPct}, 100`);
 
-      // 3. Mapping Data Unit Riil ke Baris Dashboard
-      setUnit("cctv_kabel", d.cctv_kabel_done, d.cctv_target);
-      setUnit("cctv_fisik", d.cctv_fisik_done, d.cctv_target);
-      setUnit("cctv_online", d.cctv_online_done, d.cctv_target);
+      // 3. Mapping CCTV
+      const cctvTarget = getVal(d, ["cctv_target", "CCTV_Target", "cctv_target_unit"]);
+      setUnit("cctv_kabel", getVal(d, ["cctv_kabel_done", "cctv_kabel"]), cctvTarget);
+      setUnit("cctv_fisik", getVal(d, ["cctv_fisik_done", "cctv_fisik"]), cctvTarget);
+      setUnit("cctv_online", getVal(d, ["cctv_online_done", "cctv_online"]), cctvTarget);
 
-      setUnit("net_kabel", d.net_kabel_done, d.net_target_titik);
-      setUnit("net_rack", d.net_rack_done, d.net_target_titik);
-      setUnit("net_test", d.net_test_done, d.net_target_titik);
+      // 4. Mapping Jaringan LAN
+      const netTarget = getVal(d, ["net_target_titik", "net_target", "Net_Target_Titik"]);
+      setUnit("net_kabel", getVal(d, ["net_kabel_done", "net_kabel"]), netTarget);
+      setUnit("net_rack", getVal(d, ["net_rack_done", "net_rack_switch"]), netTarget);
+      setUnit("net_test", getVal(d, ["net_test_done", "net_testing"]), netTarget);
 
-      setUnit("admin_kabel", d.admin_kabel_done, d.admin_target);
-      setUnit("admin_pc", d.admin_pc_done, d.admin_target);
-      setUnit("admin_sw", d.admin_sw_done, d.admin_target);
+      // 5. Mapping PC Admin
+      const adminTarget = getVal(d, ["admin_target", "Admin_Target"]);
+      setUnit("admin_kabel", getVal(d, ["admin_kabel_done", "admin_kabel"]), adminTarget);
+      setUnit("admin_pc", getVal(d, ["admin_pc_done", "admin_pc_setup"]), adminTarget);
+      setUnit("admin_sw", getVal(d, ["admin_sw_done", "admin_software"]), adminTarget);
 
-      setUnit("kasir_kabel", d.kasir_kabel_done, d.kasir_target);
-      setUnit("kasir_pc", d.kasir_pc_done, d.kasir_target);
-      setUnit("kasir_sw", d.kasir_sw_done, d.kasir_target);
+      // 6. Mapping PC Kasir
+      const kasirTarget = getVal(d, ["kasir_target", "Kasir_Target"]);
+      setUnit("kasir_kabel", getVal(d, ["kasir_kabel_done", "kasir_kabel"]), kasirTarget);
+      setUnit("kasir_pc", getVal(d, ["kasir_pc_done", "kasir_pc_setup"]), kasirTarget);
+      setUnit("kasir_sw", getVal(d, ["kasir_sw_done", "kasir_software", "kasir_test_done"]), kasirTarget);
+    }
+
+    // Helper untuk mengambil nilai dari berbagai variasi nama header
+    function getVal(obj, keys) {
+      for (let key of keys) {
+        if (obj[key] !== undefined && obj[key] !== "") {
+          return parseInt(obj[key]) || 0;
+        }
+      }
+      return 0;
     }
 
     function setUnit(id, done, target) {
       const d = parseInt(done) || 0;
       const t = parseInt(target) || 0;
       
-      // Jika target 0, fallback tampilan agar tidak bagi dengan nol
       const pct = t > 0 ? Math.min(Math.round((d / t) * 100), 100) : 0;
       
       const valEl = document.getElementById(`${id}_val`);
