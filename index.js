@@ -15,21 +15,20 @@ if (!botToken || !geminiApiKey || !appScriptUrl) {
 const bot = new Telegraf(botToken);
 const ai = new GoogleGenAI({ apiKey: geminiApiKey });
 
-// System Prompt yang sudah diperbaiki sintaks-nya
 const SYSTEM_PROMPT = `
 Anda adalah AI Agent IT Support yang bertugas mengekstrak laporan progres harian pembukaan toko baru menjadi data unit riil.
 
 Ekstrak atau perkirakan angka integer unit berikut berdasarkan pesan yang diberikan:
-- store_id: Nama/Kode toko.
+- store_id: Nama/Kode toko (contoh: "Prama Baleendah").
 - cctv_target, cctv_kabel_done, cctv_fisik_done, cctv_online_done
 - net_target_titik, net_kabel_done, net_rack_done, net_test_done
 - admin_target, admin_kabel_done, admin_pc_done, admin_sw_done
 - kasir_target, kasir_kabel_done, kasir_pc_done, kasir_sw_done, kasir_test_done
 - total_progress_percent: Persentase rata-rata total fisik selesai dibanding target (0-100).
 - ai_summary: Ringkasan singkat progres pengerjaan hari ini.
-- blockers_issues: Catatan kendala, barang kurang, atau kendala lapangan jika ada.
+- blockers_issues: Catatan kendala, barang kurang, atau kendala lapangan jika ada (isi string kosong jika tidak ada).
 
-Kembalikan HANYA JSON murni tanpa markdown codeblock:
+Kembalikan HANYA JSON murni:
 {
   "store_id": "STRING",
   "cctv_target": NUMBER,
@@ -67,6 +66,7 @@ bot.on('text', async (ctx) => {
   await ctx.reply('⏳ AI Agent sedang mengekstrak laporan unit...');
 
   try {
+    // 1. Panggil Gemini API
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [
@@ -75,9 +75,16 @@ bot.on('text', async (ctx) => {
       config: { responseMimeType: "application/json" }
     });
 
-    const parsedData = JSON.parse(response.text);
+    // Clean JSON Response dari kemungkinan markdown block ```json ... ```
+    let rawText = response.text.trim();
+    rawText = rawText.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '');
 
-    await axios.post(appScriptUrl, {
+    const parsedData = JSON.parse(rawText);
+    console.log('🤖 Data terurai:', parsedData);
+
+    // 2. Kirim ke Google Apps Script
+    console.log('🚀 Mengirim ke Apps Script URL:', appScriptUrl);
+    const apiRes = await axios.post(appScriptUrl, {
       type: "UPDATE_STATUS",
       data: {
         ...parsedData,
@@ -85,11 +92,16 @@ bot.on('text', async (ctx) => {
       }
     });
 
+    console.log('✅ Respons Apps Script:', apiRes.data);
+
+    // 3. Format Balasan ke Telegram
+    const cctvOnline = parsedData.cctv_online_done || (userMessage.toLowerCase().includes('sudah dinyalakan') ? parsedData.cctv_fisik_done : 0);
+
     const replyMessage = 
       `✅ **Laporan Berhasil Direkap!**\n\n` +
-      `🏪 **Toko:** ${parsedData.store_id || 'Toko Unnamed'}\n` +
+      `🏪 **Toko:** ${parsedData.store_id || 'Prama Baleendah'}\n` +
       `📊 **Total Progres:** ${parsedData.total_progress_percent || 0}%\n\n` +
-      `📹 **CCTV:** ${parsedData.cctv_fisik_done || 0}/${parsedData.cctv_target || 0} Unit Terpasang (${parsedData.cctv_online_done || 0} Online)\n` +
+      `📹 **CCTV:** ${parsedData.cctv_fisik_done || 0}/${parsedData.cctv_target || 0} Unit Terpasang (${cctvOnline} Online)\n` +
       `🌐 **Jaringan:** ${parsedData.net_kabel_done || 0}/${parsedData.net_target_titik || 0} Titik LAN\n` +
       `💻 **PC Admin:** ${parsedData.admin_pc_done || 0}/${parsedData.admin_target || 0} Unit Terpasang\n` +
       `🛒 **PC Kasir:** ${parsedData.kasir_pc_done || 0}/${parsedData.kasir_target || 0} Unit (${parsedData.kasir_sw_done || 0} SW POS)\n\n` +
@@ -99,22 +111,20 @@ bot.on('text', async (ctx) => {
     await ctx.replyWithMarkdown(replyMessage);
 
   } catch (err) {
-    console.error('❌ Error AI Agent:', err.message || err);
-    await ctx.reply('❌ Gagal memproses laporan. Pastikan pesan berisi nama toko dan detail unit.');
+    console.error('❌ Error AI Agent Detail:', err.response?.data || err.message || err);
+    await ctx.reply(`❌ Gagal memproses laporan: ${err.message || 'Error pada integrasi API'}`);
   }
 });
 
 bot.launch()
   .then(() => console.log('🤖 IT Agent Telegram Bot is running...'))
-  .catch((err) => console.error('❌ Gagal menjalankan bot:', err));
+  .catch((err) => console.error('❌ Gagal me-launch bot:', err));
 
 const PORT = process.env.PORT || 3000;
 http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('IT Support Telegram Bot Engine Live!\n');
-}).listen(PORT, () => {
-  console.log(`🌐 Server running on port ${PORT}`);
-});
+  res.end('IT Agent Bot Running\n');
+}).listen(PORT, () => console.log(`🌐 Server active on port ${PORT}`));
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
