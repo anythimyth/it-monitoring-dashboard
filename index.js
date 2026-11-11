@@ -28,6 +28,10 @@ Ekstrak atau perkirakan angka integer unit berikut berdasarkan pesan yang diberi
 - ai_summary: Ringkasan singkat progres pengerjaan hari ini.
 - blockers_issues: Catatan kendala, barang kurang, atau kendala lapangan jika ada (isi string kosong jika tidak ada).
 
+ATURAN KHUSUS:
+- Jika pengguna menyebutkan "tetap", "sama", atau tidak menyebutkan kategori tertentu, JANGAN isi 0 jika itu adalah target. 
+- Jika target toko tidak disebutkan tetapi kategori pernah ada, pertahankan atau perkirakan angka integer positif (misal cctv_target min 8, net_target min 8, admin_target min 2, kasir_target min 4) agar tidak terjadi pembagian nol.
+
 Kembalikan HANYA JSON murni:
 {
   "store_id": "STRING",
@@ -54,6 +58,7 @@ Kembalikan HANYA JSON murni:
   "speaker_online_done": NUMBER,
   "ai_summary": "STRING",
   "blockers_issues": "STRING"
+  
 }
 `;
 
