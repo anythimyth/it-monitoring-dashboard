@@ -68,7 +68,7 @@ bot.on('text', async (ctx) => {
   try {
     // 1. Panggil Gemini API
     const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-2.5-flash-lite',
       contents: [
         { role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\nPesan Laporan Harian:\n"${userMessage}"` }] }
       ],
