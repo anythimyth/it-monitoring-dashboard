@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT Support - Dashboard Unit</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+  <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased">
 
@@ -55,47 +55,58 @@
       </div>
     </div>
 
-    <!-- METRICS GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- CCTV -->
+    <!-- METRICS GRID (5 Pillar) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 1. CCTV -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
         <div class="flex items-center gap-3"><div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg"><i data-lucide="video" class="w-5 h-5"></i></div><h3 class="font-semibold">Sistem CCTV</h3></div>
         <div class="space-y-3 text-sm">
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Ditarik</span><span id="cctv_kabel_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_kabel_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Fisik Kamera</span><span id="cctv_fisik_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_fisik_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Online / Config</span><span id="cctv_online_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_online_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Ditarik</span><span id="cctv_kabel_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_kabel_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Fisik Kamera</span><span id="cctv_fisik_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_fisik_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Online / Config</span><span id="cctv_online_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_online_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
 
-      <!-- Jaringan -->
+      <!-- 2. Jaringan -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
         <div class="flex items-center gap-3"><div class="p-2 bg-cyan-500/10 text-cyan-400 rounded-lg"><i data-lucide="network" class="w-5 h-5"></i></div><h3 class="font-semibold">Jaringan (LAN)</h3></div>
         <div class="space-y-3 text-sm">
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Penarikan Kabel</span><span id="net_kabel_val">0/0 Titik</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_kabel_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Rack / Switch</span><span id="net_rack_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_rack_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Finishing & Test</span><span id="net_test_val">0/0 Titik</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_test_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Penarikan Kabel</span><span id="net_kabel_val">0 / 0 Titik</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_kabel_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Rack / Switch</span><span id="net_rack_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_rack_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Finishing & Test</span><span id="net_test_val">0 / 0 Titik</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_test_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
 
-      <!-- PC Admin -->
+      <!-- 3. PC Admin -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
         <div class="flex items-center gap-3"><div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="monitor" class="w-5 h-5"></i></div><h3 class="font-semibold">PC Admin Office</h3></div>
         <div class="space-y-3 text-sm">
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Data PC</span><span id="admin_kabel_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_kabel_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Pemasangan PC</span><span id="admin_pc_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_pc_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Instalasi Software</span><span id="admin_sw_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_sw_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Data PC</span><span id="admin_kabel_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_kabel_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Pemasangan PC</span><span id="admin_pc_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_pc_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Instalasi Software</span><span id="admin_sw_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_sw_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
 
-      <!-- PC Kasir -->
+      <!-- 4. PC Kasir -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
         <div class="flex items-center gap-3"><div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div><h3 class="font-semibold">PC Kasir (POS)</h3></div>
         <div class="space-y-3 text-sm">
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Jaringan</span><span id="kasir_kabel_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_kabel_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Pemasangan Unit</span><span id="kasir_pc_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_pc_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
-          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Software & Live</span><span id="kasir_sw_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_sw_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Jaringan</span><span id="kasir_kabel_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_kabel_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Pemasangan Unit</span><span id="kasir_pc_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_pc_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Software & Live</span><span id="kasir_sw_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_sw_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
+
+      <!-- 5. Speaker Rule (Sound System Toko) -->
+      <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
+        <div class="flex items-center gap-3"><div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="volume-2" class="w-5 h-5"></i></div><h3 class="font-semibold">Speaker Rule / Sound</h3></div>
+        <div class="space-y-3 text-sm">
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Penarikan Kabel</span><span id="speaker_kabel_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="speaker_kabel_bar" class="bg-purple-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Pemasangan Speaker</span><span id="speaker_fisik_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="speaker_fisik_bar" class="bg-purple-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Aktivasi / Online</span><span id="speaker_online_val">0 / 0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="speaker_online_bar" class="bg-purple-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- LOG HARIAN -->
@@ -107,7 +118,7 @@
 
   <script>
     // MASUKKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI
-    const API_URL = "https://script.google.com/macros/s/AKfycbz03Upg25xhHSdy5gm4jKsJK8N4XI4mgq9JnVWoMO2AaG5X15IvSScfAvkFMa1T_Qsx/exec";
+    const API_URL = "[https://script.google.com/macros/s/AKfycbx_GANTI_DENGAN_DEPLOYMENT_ID_ANDA/exec](https://script.google.com/macros/s/AKfycbx_GANTI_DENGAN_DEPLOYMENT_ID_ANDA/exec)";
 
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
@@ -147,44 +158,47 @@
     function updateUI(d) {
       if (!d) return;
 
-      // 1. Format Nama Toko & Last Update
       document.getElementById("storeTitle").textContent = d.store_id || d.Store_Id || "Prama Baleendah";
       
       const rawDate = d.last_update || d.Last_Update || "";
       const lastUp = rawDate ? rawDate.toString().replace('T', ' ').substring(0, 19) : '-';
       document.getElementById("lastUpdateText").textContent = `Last Update: ${lastUp}`;
 
-      // 2. Hitung Total Progress Akumulasi
-      const totalPct = parseInt(d.total_progress_percent || d.total_progress || d.Total_Progress || 0);
+      const totalPct = parseInt(d.total_progress_percent || d.total_progress || 0);
       document.getElementById("totalProgressPercent").textContent = `${totalPct}%`;
       document.getElementById("progressCircle").setAttribute("stroke-dasharray", `${totalPct}, 100`);
 
-      // 3. Mapping CCTV
-      const cctvTarget = getVal(d, ["cctv_target", "CCTV_Target", "cctv_target_unit"]);
+      // CCTV
+      const cctvTarget = getVal(d, ["cctv_target", "CCTV_Target"]);
       setUnit("cctv_kabel", getVal(d, ["cctv_kabel_done", "cctv_kabel"]), cctvTarget);
       setUnit("cctv_fisik", getVal(d, ["cctv_fisik_done", "cctv_fisik"]), cctvTarget);
       setUnit("cctv_online", getVal(d, ["cctv_online_done", "cctv_online"]), cctvTarget);
 
-      // 4. Mapping Jaringan LAN
-      const netTarget = getVal(d, ["net_target_titik", "net_target", "Net_Target_Titik"]);
+      // Jaringan LAN
+      const netTarget = getVal(d, ["net_target_titik", "net_target"]);
       setUnit("net_kabel", getVal(d, ["net_kabel_done", "net_kabel"]), netTarget);
       setUnit("net_rack", getVal(d, ["net_rack_done", "net_rack_switch"]), netTarget);
       setUnit("net_test", getVal(d, ["net_test_done", "net_testing"]), netTarget);
 
-      // 5. Mapping PC Admin
+      // PC Admin
       const adminTarget = getVal(d, ["admin_target", "Admin_Target"]);
       setUnit("admin_kabel", getVal(d, ["admin_kabel_done", "admin_kabel"]), adminTarget);
       setUnit("admin_pc", getVal(d, ["admin_pc_done", "admin_pc_setup"]), adminTarget);
       setUnit("admin_sw", getVal(d, ["admin_sw_done", "admin_software"]), adminTarget);
 
-      // 6. Mapping PC Kasir
+      // PC Kasir
       const kasirTarget = getVal(d, ["kasir_target", "Kasir_Target"]);
       setUnit("kasir_kabel", getVal(d, ["kasir_kabel_done", "kasir_kabel"]), kasirTarget);
       setUnit("kasir_pc", getVal(d, ["kasir_pc_done", "kasir_pc_setup"]), kasirTarget);
-      setUnit("kasir_sw", getVal(d, ["kasir_sw_done", "kasir_software", "kasir_test_done"]), kasirTarget);
+      setUnit("kasir_sw", getVal(d, ["kasir_sw_done", "kasir_software"]), kasirTarget);
+
+      // Speaker Rule
+      const speakerTarget = getVal(d, ["speaker_target", "Speaker_Target"]);
+      setUnit("speaker_kabel", getVal(d, ["speaker_kabel_done", "speaker_kabel"]), speakerTarget);
+      setUnit("speaker_fisik", getVal(d, ["speaker_fisik_done", "speaker_fisik"]), speakerTarget);
+      setUnit("speaker_online", getVal(d, ["speaker_online_done", "speaker_online"]), speakerTarget);
     }
 
-    // Helper untuk mengambil nilai dari berbagai variasi nama header
     function getVal(obj, keys) {
       for (let key of keys) {
         if (obj[key] !== undefined && obj[key] !== "") {
@@ -197,7 +211,6 @@
     function setUnit(id, done, target) {
       const d = parseInt(done) || 0;
       const t = parseInt(target) || 0;
-      
       const pct = t > 0 ? Math.min(Math.round((d / t) * 100), 100) : 0;
       
       const valEl = document.getElementById(`${id}_val`);
