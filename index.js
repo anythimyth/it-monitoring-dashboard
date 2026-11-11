@@ -3,27 +3,24 @@ import { GoogleGenAI } from '@google/genai';
 import axios from 'axios';
 import 'dotenv/config';
 
-// Inisialisasi Environment Variables
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 const APPS_SCRIPT_URL = process.env.APPS_SCRIPT_URL;
 
-// Prompt System untuk Ekstraksi Progres IT
 const SYSTEM_PROMPT = `
-Anda adalah AI Agent IT Support yang bertugas mengekstrak laporan harian pembukaan toko baru menjadi data jumlah unit riil.
+Anda adalah AI Agent IT Support yang bertugas mengekstrak laporan progres harian pembukaan toko baru menjadi data unit riil.
 
-Tugas Anda:
-1. Identifikasi store_id.
-2. Ekstrak data unit berikut (format angka integer):
-   - cctv_target, cctv_kabel_done, cctv_fisik_done, cctv_online_done
-   - net_target_titik, net_kabel_done, net_rack_done, net_test_done
-   - admin_target, admin_kabel_done, admin_pc_done, admin_sw_done
-   - kasir_target, kasir_kabel_done, kasir_pc_done, kasir_sw_done, kasir_test_done
-3. Hitung total_progress_percent (otomatis dari total fisik terpasang dibanding target).
-4. Ringkas ai_summary dan catat blockers_issues jika ada.
+Ekstrak atau perkirakan angka integer unit berikut berdasarkan pesan:
+- store_id: Nama/Kode toko.
+- cctv_target, cctv_kabel_done, cctv_fisik_done, cctv_online_done
+- net_target_titik, net_kabel_done, net_rack_done, net_test_done
+- admin_target, admin_kabel_done, admin_pc_done, admin_sw_done
+- kasir_target, kasir_kabel_done, kasir_pc_done, kasir_sw_done, kasir_test_done
+- total_progress_percent: Persentase rata-rata total fisik selesai dibanding target.
+- ai_summary: Ringkasan singkat progres.
+- blockers_issues: Catatan kendala/part yang kurang jika ada.
 
-Kembalikan HANYA JSON murni:
+Kembalikan HANYA JSON murni tanpa markdown codeblock:
 {
   "store_id": "STRING",
   "cctv_target": NUMBER,
@@ -48,53 +45,46 @@ Kembalikan HANYA JSON murni:
   "blockers_issues": "STRING"
 }
 `;
-// Event Listener Telegram Pesan Teks
+
 bot.on('text', async (ctx) => {
   const userMessage = ctx.message.text;
-  await ctx.reply('⏳ AI Agent sedang memproses & merekap laporan...');
+  await ctx.reply('⏳ AI Agent sedang merekap laporan unit...');
 
   try {
-    // 1. Panggil Gemini 2.5 Flash
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [
-        { role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\nPesan Laporan Harian:\n"${userMessage}"` }] }
+        { role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\nPesan:\n"${userMessage}"` }] }
       ],
       config: { responseMimeType: "application/json" }
     });
 
-    const parsedData = JSON.parse(response.text);
+    const parsed = JSON.parse(response.text);
 
-    // 2. Kirim Payload ke Google Apps Script
-    const payload = {
+    await axios.post(APPS_SCRIPT_URL, {
       type: "UPDATE_STATUS",
-      data: {
-        ...parsedData,
-        raw_message: userMessage
-      }
-    };
+      data: { ...parsed, raw_message: userMessage }
+    });
 
-    await axios.post(APPS_SCRIPT_URL, payload);
+    const reply = `✅ **Laporan Berhasil Direkap!**\n\n` +
+      `🏪 **Toko:** ${parsed.store_id}\n` +
+      `📊 **Total Progres:** ${parsed.total_progress_percent}%\n\n` +
+      `📹 **CCTV:** ${parsed.cctv_fisik_done}/${parsed.cctv_target} Unit Terpasang (${parsed.cctv_online_done} Online)\n` +
+      `🌐 **Jaringan:** ${parsed.net_kabel_done}/${parsed.net_target_titik} Titik LAN\n` +
+      `💻 **PC Admin:** ${parsed.admin_pc_done}/${parsed.admin_target} PC Terpasang\n` +
+      `🛒 **PC Kasir:** ${parsed.kasir_pc_done}/${parsed.kasir_target} Unit (${parsed.kasir_sw_done} SW POS)\n\n` +
+      `📝 **Summary:** ${parsed.ai_summary}\n` +
+      (parsed.blockers_issues ? `⚠️ **Kendala:** ${parsed.blockers_issues}` : `✨ **Kendala:** Nihil`);
 
-    // 3. Balas ke Telegram
-    const replyText = `✅ **Laporan Berhasil Direkap!**\n\n` +
-      `🏪 **Toko:** ${parsedData.store_id}\n` +
-      `📊 **Total Progres:** ${parsedData.total_progress}%\n` +
-      `📝 **Summary:** ${parsedData.ai_summary}\n` +
-      (parsedData.blockers_issues ? `⚠️ **Kendala:** ${parsedData.blockers_issues}` : `✨ **Kendala:** Nihil`);
-
-    await ctx.replyWithMarkdown(replyText);
+    await ctx.replyWithMarkdown(reply);
 
   } catch (err) {
-    console.error('Error processing agent:', err);
-    await ctx.reply('❌ Gagal memproses laporan. Pastikan format pesan mencantumkan nama toko dan detail progres.');
+    console.error(err);
+    await ctx.reply('❌ Gagal memproses laporan. Pastikan menyebutkan nama toko dan detail unit.');
   }
 });
 
-// Launch Bot (Polling Mode)
 bot.launch();
-console.log('🤖 IT Agent Telegram Bot is running...');
-
-// Graceful Stop
+console.log('🤖 IT Bot running...');
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
