@@ -3,45 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Project Support - Monitoring Dashboard</title>
-  <!-- Tailwind CSS CDN -->
+  <title>IT Support - Dashboard Unit</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: { 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased">
 
   <!-- HEADER -->
   <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="p-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-500/30">
           <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="font-bold text-lg leading-tight">IT Support Monitoring</h1>
-          <p class="text-xs text-slate-400">Progres Pembukaan Toko Baru</p>
+          <h1 class="font-bold text-lg">IT Support Monitoring</h1>
+          <p class="text-xs text-slate-400">Monitoring Unit Pembukaan Toko Baru</p>
         </div>
       </div>
-      
       <div class="flex items-center gap-3">
-        <!-- Selector Toko -->
-        <select id="storeSelect" onchange="fetchDashboardData()" class="bg-slate-800 border border-slate-700 text-sm text-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">-- Semua Toko --</option>
+        <select id="storeSelect" onchange="fetchDashboardData()" class="bg-slate-800 border border-slate-700 text-sm text-slate-200 rounded-lg px-3 py-2">
+          <option value="">-- Pilih Toko --</option>
         </select>
-        
-        <button onclick="fetchDashboardData()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition" title="Refresh Data">
+        <button onclick="fetchDashboardData()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700">
           <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
         </button>
       </div>
@@ -49,152 +33,80 @@
   </header>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-
-    <!-- TOP OVERVIEW CARD -->
-    <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 relative overflow-hidden backdrop-blur">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8 space-y-8">
+    <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div>
+        <span class="text-xs text-slate-400" id="lastUpdateText">Last Update: -</span>
+        <h2 class="text-2xl font-bold mt-1" id="storeTitle">Pilih Toko</h2>
+        <p class="text-sm text-slate-400">Progres riil pemasangan unit IT di lapangan.</p>
+      </div>
+      <div class="flex items-center gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 min-w-[220px]">
+        <div class="relative w-16 h-16 flex items-center justify-center">
+          <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+            <path class="text-slate-700" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path id="progressCircle" class="text-blue-500 transition-all duration-1000 stroke-current" stroke-linecap="round" stroke-width="3.5" stroke-dasharray="0, 100" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <span class="absolute text-sm font-bold" id="totalProgressPercent">0%</span>
+        </div>
         <div>
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-1 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full" id="storeStatusBadge">
-              Status Active
-            </span>
-            <span class="text-xs text-slate-400" id="lastUpdateText">Last Update: -</span>
-          </div>
-          <h2 class="text-2xl font-bold mt-2" id="storeTitle">Pilih Toko untuk Melihat Detail</h2>
-          <p class="text-sm text-slate-400 mt-1" id="storeSubtitle">Monitoring real-time alur penarikan jaringan, CCTV, dan setup PC.</p>
-        </div>
-
-        <!-- Progress Total Gauge -->
-        <div class="flex items-center gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 min-w-[240px]">
-          <div class="relative w-16 h-16 flex items-center justify-center">
-            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-              <path class="text-slate-700" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path id="progressCircle" class="text-blue-500 transition-all duration-1000 stroke-current" stroke-linecap="round" stroke-width="3.5" stroke-dasharray="0, 100" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-            <span class="absolute text-sm font-bold" id="totalProgressPercent">0%</span>
-          </div>
-          <div>
-            <div class="text-xs font-medium text-slate-400">Total Akumulasi</div>
-            <div class="text-lg font-bold text-slate-100">Progres IT Toko</div>
-          </div>
+          <div class="text-xs text-slate-400">Total Progres</div>
+          <div class="text-base font-bold">Fisik IT</div>
         </div>
       </div>
     </div>
 
-    <!-- 4 PILLAR METRICS GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="metricsGrid">
-      
-      <!-- 1. CCTV Tracker -->
+    <!-- METRICS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- CCTV -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg"><i data-lucide="video" class="w-5 h-5"></i></div>
-          <h3 class="font-semibold text-slate-200">Sistem CCTV</h3>
-        </div>
+        <div class="flex items-center gap-3"><div class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg"><i data-lucide="video" class="w-5 h-5"></i></div><h3 class="font-semibold">Sistem CCTV</h3></div>
         <div class="space-y-3 text-sm">
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Penarikan Kabel</span><span id="cctv_kabel_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="cctv_kabel_bar" class="bg-indigo-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Pemasangan Kamera</span><span id="cctv_fisik_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="cctv_fisik_bar" class="bg-indigo-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Pengaktifan & Config</span><span id="cctv_online_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="cctv_online_bar" class="bg-indigo-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Ditarik</span><span id="cctv_kabel_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_kabel_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Fisik Kamera</span><span id="cctv_fisik_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_fisik_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Online / Config</span><span id="cctv_online_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="cctv_online_bar" class="bg-indigo-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
 
-      <!-- 2. Jaringan Tracker -->
+      <!-- Jaringan -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-cyan-500/10 text-cyan-400 rounded-lg"><i data-lucide="network" class="w-5 h-5"></i></div>
-          <h3 class="font-semibold text-slate-200">Jaringan & Infrastructure</h3>
-        </div>
+        <div class="flex items-center gap-3"><div class="p-2 bg-cyan-500/10 text-cyan-400 rounded-lg"><i data-lucide="network" class="w-5 h-5"></i></div><h3 class="font-semibold">Jaringan (LAN)</h3></div>
         <div class="space-y-3 text-sm">
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Penarikan Kabel LAN</span><span id="net_kabel_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="net_kabel_bar" class="bg-cyan-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Rack & Switch Setup</span><span id="net_rack_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="net_rack_bar" class="bg-cyan-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Finishing & Testing</span><span id="net_test_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="net_test_bar" class="bg-cyan-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Penarikan Kabel</span><span id="net_kabel_val">0/0 Titik</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_kabel_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Rack / Switch</span><span id="net_rack_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_rack_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Finishing & Test</span><span id="net_test_val">0/0 Titik</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="net_test_bar" class="bg-cyan-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
 
-      <!-- 3. PC Admin Office -->
+      <!-- PC Admin -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="monitor" class="w-5 h-5"></i></div>
-          <h3 class="font-semibold text-slate-200">PC Office / Admin</h3>
-        </div>
+        <div class="flex items-center gap-3"><div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="monitor" class="w-5 h-5"></i></div><h3 class="font-semibold">PC Admin Office</h3></div>
         <div class="space-y-3 text-sm">
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Jaringan Kabel PC</span><span id="admin_kabel_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="admin_kabel_bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Pemasangan PC Setup</span><span id="admin_pc_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="admin_pc_bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Instalasi Software</span><span id="admin_sw_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="admin_sw_bar" class="bg-emerald-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Data PC</span><span id="admin_kabel_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_kabel_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Pemasangan PC</span><span id="admin_pc_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_pc_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Instalasi Software</span><span id="admin_sw_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="admin_sw_bar" class="bg-emerald-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
 
-      <!-- 4. PC Kasir (POS) -->
+      <!-- PC Kasir -->
       <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-5 space-y-4">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div>
-          <h3 class="font-semibold text-slate-200">PC Kasir (POS)</h3>
-        </div>
+        <div class="flex items-center gap-3"><div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div><h3 class="font-semibold">PC Kasir (POS)</h3></div>
         <div class="space-y-3 text-sm">
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Penarikan Kabel Kasir</span><span id="kasir_kabel_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="kasir_kabel_bar" class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Pemasangan Hardware</span><span id="kasir_pc_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="kasir_pc_bar" class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between mb-1 text-xs text-slate-400"><span>Software & Live Test</span><span id="kasir_sw_val">0%</span></div>
-            <div class="w-full bg-slate-700 h-2 rounded-full"><div id="kasir_sw_bar" class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-          </div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Kabel Jaringan</span><span id="kasir_kabel_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_kabel_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Pemasangan Unit</span><span id="kasir_pc_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_pc_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
+          <div><div class="flex justify-between text-xs text-slate-400 mb-1"><span>Software & Live</span><span id="kasir_sw_val">0/0 Unit</span></div><div class="bg-slate-700 h-2 rounded-full"><div id="kasir_sw_bar" class="bg-amber-500 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
         </div>
       </div>
-
     </div>
 
-    <!-- LOG TIMELINE & ISSUES SECTION -->
+    <!-- LOG HARIAN -->
     <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl p-6">
-      <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center gap-3">
-          <div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="history" class="w-5 h-5"></i></div>
-          <h3 class="font-semibold text-lg text-slate-200">Catatan & Log Harian AI Agent</h3>
-        </div>
-      </div>
-
-      <div class="space-y-4" id="logContainer">
-        <!-- Template Log Row (Populated by JS) -->
-        <p class="text-sm text-slate-500">Memuat log aktivitas...</p>
-      </div>
+      <h3 class="font-semibold text-lg text-slate-200 mb-4">Log & Catatan Kendala Harian</h3>
+      <div class="space-y-3" id="logContainer"><p class="text-sm text-slate-500">Memuat log...</p></div>
     </div>
-
   </main>
 
-  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // GANTI URL DI BAWAH DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA
+    // MASUKKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI
     const API_URL = "https://script.google.com/macros/s/AKfycbx_GANTI_DENGAN_DEPLOYMENT_ID_ANDA/exec";
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -203,121 +115,81 @@
     });
 
     async function fetchDashboardData() {
-      const refreshIcon = document.getElementById("refreshIcon");
-      refreshIcon.classList.add("animate-spin");
-
       const storeSelect = document.getElementById("storeSelect");
       const selectedStore = storeSelect.value;
-
       try {
-        // Fetch status
-        const statusRes = await fetch(`${API_URL}?action=getStatus${selectedStore ? '&store_id=' + selectedStore : ''}`);
-        const statusJson = await statusRes.json();
-
-        if (statusJson.status === "success" && statusJson.data.length > 0) {
-          populateStoreOptions(statusJson.data);
-          const currentData = selectedStore 
-            ? statusJson.data.find(d => d.store_id === selectedStore) 
-            : statusJson.data[0];
-          
-          updateDashboardUI(currentData);
+        const res = await fetch(`${API_URL}?action=getStatus${selectedStore ? '&store_id=' + selectedStore : ''}`);
+        const json = await res.json();
+        if (json.status === "success" && json.data.length > 0) {
+          populateOptions(json.data);
+          const curr = selectedStore ? json.data.find(d => d.store_id === selectedStore) : json.data[0];
+          updateUI(curr);
         }
-
-        // Fetch logs
         const logRes = await fetch(`${API_URL}?action=getLogs${selectedStore ? '&store_id=' + selectedStore : ''}`);
         const logJson = await logRes.json();
-
-        if (logJson.status === "success") {
-          renderLogs(logJson.data);
-        }
-
-      } catch (err) {
-        console.error("Gagal mengambil data dari API:", err);
-      } finally {
-        refreshIcon.classList.remove("animate-spin");
-      }
+        if (logJson.status === "success") renderLogs(logJson.data);
+      } catch (e) { console.error(e); }
     }
 
-    function populateStoreOptions(data) {
-      const storeSelect = document.getElementById("storeSelect");
-      const currentVal = storeSelect.value;
-
-      // Unique Store IDs
+    function populateOptions(data) {
+      const select = document.getElementById("storeSelect");
+      const currVal = select.value;
       const stores = [...new Set(data.map(d => d.store_id))];
-      
-      storeSelect.innerHTML = `<option value="">-- Pilih Toko --</option>`;
-      stores.forEach(store => {
-        const option = document.createElement("option");
-        option.value = store;
-        option.textContent = store;
-        if (store === currentVal) option.selected = true;
-        storeSelect.appendChild(option);
+      select.innerHTML = `<option value="">-- Pilih Toko --</option>`;
+      stores.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s; opt.textContent = s;
+        if (s === currVal) opt.selected = true;
+        select.appendChild(opt);
       });
     }
 
-    function updateDashboardUI(d) {
+    function updateUI(d) {
       if (!d) return;
+      document.getElementById("storeTitle").textContent = d.store_id;
+      document.getElementById("lastUpdateText").textContent = `Last Update: ${d.last_update}`;
+      document.getElementById("totalProgressPercent").textContent = `${d.total_progress_percent}%`;
+      document.getElementById("progressCircle").setAttribute("stroke-dasharray", `${d.total_progress_percent}, 100`);
 
-      document.getElementById("storeTitle").textContent = d.store_id || "Toko Unnamed";
-      document.getElementById("lastUpdateText").textContent = `Last Update: ${d.last_update || '-'}`;
+      setUnit("cctv_kabel", d.cctv_kabel_done, d.cctv_target);
+      setUnit("cctv_fisik", d.cctv_fisik_done, d.cctv_target);
+      setUnit("cctv_online", d.cctv_online_done, d.cctv_target);
 
-      // Progress Total
-      const total = d.total_progress || 0;
-      document.getElementById("totalProgressPercent").textContent = `${total}%`;
-      document.getElementById("progressCircle").setAttribute("stroke-dasharray", `${total}, 100`);
+      setUnit("net_kabel", d.net_kabel_done, d.net_target_titik);
+      setUnit("net_rack", d.net_rack_done, d.net_target_titik);
+      setUnit("net_test", d.net_test_done, d.net_target_titik);
 
-      // Update Individual Bars
-      setBar("cctv_kabel", d.cctv_kabel);
-      setBar("cctv_fisik", d.cctv_fisik);
-      setBar("cctv_online", d.cctv_online);
+      setUnit("admin_kabel", d.admin_kabel_done, d.admin_target);
+      setUnit("admin_pc", d.admin_pc_done, d.admin_target);
+      setUnit("admin_sw", d.admin_sw_done, d.admin_target);
 
-      setBar("net_kabel", d.net_kabel);
-      setBar("net_rack", d.net_rack_switch);
-      setBar("net_test", d.net_testing);
-
-      setBar("admin_kabel", d.admin_kabel);
-      setBar("admin_pc", d.admin_pc_setup);
-      setBar("admin_sw", d.admin_software);
-
-      setBar("kasir_kabel", d.kasir_kabel);
-      setBar("kasir_pc", d.kasir_pc_setup);
-      setBar("kasir_sw", d.kasir_software);
+      setUnit("kasir_kabel", d.kasir_kabel_done, d.kasir_target);
+      setUnit("kasir_pc", d.kasir_pc_done, d.kasir_target);
+      setUnit("kasir_sw", d.kasir_sw_done, d.kasir_target);
     }
 
-    function setBar(idPrefix, val) {
-      const v = val || 0;
-      const valEl = document.getElementById(`${idPrefix}_val`);
-      const barEl = document.getElementById(`${idPrefix}_bar`);
-      if (valEl) valEl.textContent = `${v}%`;
-      if (barEl) barEl.style.width = `${v}%`;
+    function setUnit(id, done, target) {
+      const d = done || 0, t = target || 1;
+      const pct = Math.min(Math.round((d / t) * 100), 100);
+      document.getElementById(`${id}_val`).textContent = `${d} / ${t}`;
+      document.getElementById(`${id}_bar`).style.width = `${pct}%`;
     }
 
     function renderLogs(logs) {
-      const logContainer = document.getElementById("logContainer");
-      logContainer.innerHTML = "";
-
-      if (!logs || logs.length === 0) {
-        logContainer.innerHTML = `<p class="text-sm text-slate-500">Belum ada log catatan harian.</p>`;
-        return;
-      }
-
-      // Sort log dari yang terbaru
-      logs.reverse().forEach(log => {
+      const container = document.getElementById("logContainer");
+      container.innerHTML = "";
+      if (!logs || logs.length === 0) { container.innerHTML = `<p class="text-sm text-slate-500">Belum ada log.</p>`; return; }
+      logs.reverse().forEach(l => {
         const div = document.createElement("div");
-        div.className = "bg-slate-900/60 border border-slate-700/40 rounded-lg p-4 space-y-2";
+        div.className = "bg-slate-900/60 border border-slate-700/40 rounded-lg p-3 text-sm space-y-1";
         div.innerHTML = `
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="text-xs font-semibold text-blue-400">${log.store_id}</span>
-            <span class="text-xs text-slate-500">${log.date}</span>
+          <div class="flex justify-between text-xs text-blue-400 border-b border-slate-800 pb-1">
+            <span>${l.store_id}</span><span>${l.date}</span>
           </div>
-          <p class="text-sm text-slate-300">${log.ai_summary || log.raw_message}</p>
-          ${log.blockers_issues ? `
-            <div class="mt-2 text-xs bg-red-500/10 border border-red-500/20 text-red-400 p-2 rounded">
-              <strong>Kendala:</strong> ${log.blockers_issues}
-            </div>
-          ` : ''}
+          <p class="text-slate-300 mt-1">${l.ai_summary}</p>
+          ${l.blockers_issues ? `<div class="text-xs text-red-400 bg-red-500/10 p-1.5 rounded mt-1">⚠️ ${l.blockers_issues}</div>` : ''}
         `;
-        logContainer.appendChild(div);
+        container.appendChild(div);
       });
     }
   </script>
